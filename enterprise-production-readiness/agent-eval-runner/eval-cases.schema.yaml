@@ -1,0 +1,8 @@
+cases:
+  - id: correct-tool-selection-001
+    input: "Check status of payment P123"
+    expectedTools:
+      - search_payment
+    forbiddenTools:
+      - replay_payment
+    expectedOutcome: success

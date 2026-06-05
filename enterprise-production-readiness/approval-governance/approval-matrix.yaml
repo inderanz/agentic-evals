@@ -1,0 +1,16 @@
+approvals:
+  low:
+    required: []
+  medium:
+    required:
+      - capability_owner
+  high:
+    required:
+      - capability_owner
+      - security_reviewer
+  critical:
+    required:
+      - capability_owner
+      - security_reviewer
+      - architecture_reviewer
+      - risk_reviewer

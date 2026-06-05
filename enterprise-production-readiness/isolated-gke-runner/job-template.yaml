@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ai-capability-eval-REPLACE_RUN_ID
+  namespace: ai-evaluation-runs
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: ai-eval-runner
+      containers:
+        - name: runner
+          image: australia-southeast1-docker.pkg.dev/PROJECT/ai/eval-runner:VERSION
+          env:
+            - name: RUN_ID
+              value: REPLACE_RUN_ID
+            - name: REPO_URL
+              value: REPLACE_REPO_URL
+            - name: COMMIT_SHA
+              value: REPLACE_SHA
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"

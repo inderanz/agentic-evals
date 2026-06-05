@@ -1,0 +1,39 @@
+name: Enterprise Capability Eval
+
+on:
+  pull_request:
+    paths:
+      - "marketplace.yaml"
+      - "SKILL.md"
+      - "eval-cases.yaml"
+      - "src/**"
+      - "agent.py"
+      - "package.json"
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install evaluator dependencies
+        run: |
+          python -m pip install fastapi pydantic pyyaml jsonschema
+      - name: Run local enterprise evaluator
+        run: |
+          PYTHONPATH=enterprise-hardening/evaluator/app python - <<'PY'
+          from evaluator import evaluate_local_repo
+          import json
+          result = evaluate_local_repo('.')
+          print(json.dumps(result, indent=2))
+          open('enterprise-scorecard.json','w').write(json.dumps(result, indent=2))
+          if result['status'] != 'approved':
+              raise SystemExit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: enterprise-scorecard
+          path: enterprise-scorecard.json

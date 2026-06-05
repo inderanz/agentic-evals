@@ -1,0 +1,18 @@
+apiVersion: ai.company.com/v1
+kind: AgentCapability
+metadata:
+  name: payment-investigation-agent
+  version: 1.0.0
+  owner: payments-platform
+  supportChannel: "#payments-ai-support"
+spec:
+  type: agent
+  riskLevel: high
+  dataClassification: confidential
+  runtime:
+    authRequired: true
+  security:
+    requiresAuditLogging: true
+  eval:
+    casesFile: eval-cases.yaml
+    minimumScore: 85

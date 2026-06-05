@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": { "const": "ai.company.com/v1" },
+    "kind": { "const": "AgentCapability" },
+    "metadata": {
+      "type": "object",
+      "required": ["name", "version", "owner", "supportChannel"]
+    },
+    "spec": {
+      "type": "object",
+      "required": ["type", "riskLevel", "dataClassification", "runtime", "security", "eval"],
+      "properties": {
+        "type": { "enum": ["agent", "skill", "mcp-server"] },
+        "riskLevel": { "enum": ["low", "medium", "high", "critical"] },
+        "dataClassification": { "enum": ["public", "internal", "confidential", "restricted"] }
+      }
+    }
+  }
+}

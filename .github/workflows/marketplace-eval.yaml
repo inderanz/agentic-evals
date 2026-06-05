@@ -1,0 +1,43 @@
+name: Enterprise AI Capability Evaluation
+
+on:
+  pull_request:
+    paths:
+      - "marketplace.yaml"
+      - "SKILL.md"
+      - "eval-cases.yaml"
+      - "src/**"
+      - "agent.py"
+      - "package.json"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call central evaluator
+        run: |
+          response=$(curl -s -X POST "$EVAL_ENGINE_URL/api/v1/evaluate" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "repo_url": "https://github.com/${{ github.repository }}.git",
+              "sha": "${{ github.event.pull_request.head.sha }}"
+            }')
+
+          echo "$response" | jq .
+          echo "$response" > scorecard.json
+          status=$(echo "$response" | jq -r '.status')
+          if [ "$status" != "approved" ]; then
+            exit 1
+          fi
+        env:
+          EVAL_ENGINE_URL: ${{ secrets.EVAL_ENGINE_URL }}
+
+      - name: Upload scorecard
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-capability-scorecard
+          path: scorecard.json

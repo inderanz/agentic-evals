@@ -1,0 +1,14 @@
+recertification:
+  low: 180d
+  medium: 90d
+  high: 60d
+  critical: 30d
+
+forceRecertificationOn:
+  - dependency_change
+  - base_image_change
+  - model_change
+  - tool_schema_change
+  - skill_instruction_change
+  - policy_pack_change
+  - critical_cve_detected

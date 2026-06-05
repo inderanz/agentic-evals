@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-capability-evaluator
+  namespace: ai-evaluation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-capability-evaluator
+  template:
+    metadata:
+      labels:
+        app: ai-capability-evaluator
+    spec:
+      serviceAccountName: ai-capability-evaluator
+      containers:
+        - name: api
+          image: australia-southeast1-docker.pkg.dev/PROJECT/ai/ai-capability-evaluator:1.0.0
+          ports:
+            - containerPort: 8080
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
